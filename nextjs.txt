@@ -1,0 +1,5 @@
+Reduced network waterfall : server side fetching
+Incremental Static Regeneration : time based revalidation
+partial prerendering : partially static are rendered on server and dynamic on on <suspense/> and are rendered on client ( half half)
+simple setup
+SEO

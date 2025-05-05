@@ -1,7 +1,7 @@
 "use client"
 import React from 'react'
 async function Albums  () {
-    const response= await fetch('https://jsonplaceholder.typicode.com/albums')
+   const response= await fetch('https://jsonplaceholder.typicode.com/albums')
    const data= await response.json()
 
 
