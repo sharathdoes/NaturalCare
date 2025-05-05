@@ -1,16 +1,18 @@
-import NextAuth from "next-auth"
-import Google from "next-auth/providers/google"
- 
-export const { handlers, auth, signIn, signOut } = NextAuth({
+// app/api/auth/[...nextauth]/route.ts
+import NextAuth from "next-auth";
+import GoogleProvider from "next-auth/providers/google";
+
+// Define the NextAuth options
+export const authOptions = {
   providers: [
-    Google({
-      authorization: {
-        params: {
-          prompt: "consent",
-          access_type: "offline",
-          response_type: "code",
-        },
-      },
+    GoogleProvider({
+      clientId: process.env.AUTH_GOOGLE_ID || "",
+      clientSecret: process.env.AUTH_GOOGLE_SECRET || "",
     }),
   ],
-})
+  secret: process.env.SECRET || "",
+};
+
+// Export named handlers for GET and POST
+export const GET = NextAuth(authOptions);
+export const POST = NextAuth(authOptions);
