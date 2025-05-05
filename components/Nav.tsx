@@ -15,10 +15,10 @@ const NavBarClient = () => {
   }
 
   return (
-    <header className="px-5 py-2 bg-white shadow-md">
+    <header className="px-5 py-3 bg-white shadow-md">
       <nav className="flex justify-between items-center pr-5 pl-5">
         <Link href="/">
-          <Image src="/logo.svg" alt="Logo" width={70} height={40} />
+          <Image src="/wellvet.svg" alt="Logo" width={140} height={140} />
         </Link>
         {session && session.user ? (
         <>
@@ -26,7 +26,7 @@ const NavBarClient = () => {
             <Link href="/dashboard" className="text-lg">
               Create
             </Link>
-            <button  className="text-lg" onClick={() => signOut()}>SignOut</button>
+            <button  className="text-lg"onClick={() => signOut()}>SignOut</button>
             <div className="flex items-center gap-2">
               <Image
                 src={session.user.image || ""}
@@ -39,7 +39,7 @@ const NavBarClient = () => {
           </div>
         </>
         ):(
-        <button onClick={() => signIn("google")}>SignIn</button>)}
+        <button className="  hover:underline  hover:text-blue-500"onClick={() => signIn("google")}>SignIn</button>)}
       </nav>
     </header>
   );

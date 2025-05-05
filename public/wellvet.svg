@@ -1,0 +1,16 @@
+<svg viewBox="0 0 400 120" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background (transparent) -->
+  <rect width="400" height="120" fill="transparent" />
+  
+  <!-- Main Text with no space -->
+  <text x="20" y="80" font-family="Arial, sans-serif" font-weight="bold" font-size="60">
+    <tspan fill="#FF3366">Well</tspan><tspan fill="#000000">Vet</tspan><g transform="translate(290, 60)">
+    <line x1="0" y1="-15" x2="15" y2="-30" stroke="#FF3366" stroke-width="4" stroke-linecap="round" />
+    <line x1="0" y1="0" x2="15" y2="0" stroke="#FF3366" stroke-width="4" stroke-linecap="round" />
+    <line x1="0" y1="15" x2="15" y2="30" stroke="#FF3366" stroke-width="4" stroke-linecap="round" />
+  </g>
+  </text>
+  
+  <!-- Decorative Element - directly connected to the text -->
+  
+</svg>
