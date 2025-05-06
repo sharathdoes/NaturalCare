@@ -23,10 +23,10 @@ const NavBarClient = () => {
         {session && session.user ? (
         <>
           <div className="flex items-center gap-5 text-black">
-            <Link href="/dashboard" className="text-lg">
+            <button  className="text-lg">
               Create
-            </Link>
-            <button  className="text-lg"onClick={() => signOut()}>SignOut</button>
+            </button>
+            <button  className="text-lg"onClick={() => signOut()}>Logout</button>
             <div className="flex items-center gap-2">
               <Image
                 src={session.user.image || ""}
@@ -39,7 +39,7 @@ const NavBarClient = () => {
           </div>
         </>
         ):(
-        <button className="  hover:underline  hover:text-blue-500"onClick={() => signIn("google")}>SignIn</button>)}
+        <button className="  hover:underline  hover:text-blue-500"onClick={() => signIn("google")}>Login</button>)}
       </nav>
     </header>
   );

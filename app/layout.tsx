@@ -9,6 +9,10 @@ const workSans = localFont({
   src: "./fonts/WorkSans-Regular.ttf"
 })
 
+const workSansBold = localFont({
+  src: "./fonts/WorkSans-ExtraBold.ttf"
+})
+
 
 
 export default function RootLayout({
