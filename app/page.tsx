@@ -15,10 +15,14 @@ function page() {
           Pitch Your Startup, <br />
           Connect With Entrepreneurs
         </h1>
-        <p className="text-white text-center sm:text-lg text-base max-w-3xl">
-          Submit Ideas, Vote on Pitches, and Get Noticed in Virtual Competitions
+        <p className="text-[20px]  text-white max-w-2xl text-center break-words">
+          Submit Ideas, Vote on Pitches, get Noticed in Virtual Competitions
         </p>
         <SearchForm/>
+      </section>
+
+      <section className="px-6 py-10 max-w-7xl mx-auto">
+     
       </section>
     </>
   );
