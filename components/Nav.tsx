@@ -1,14 +1,33 @@
-// NavBarClient.tsx
 "use client";
 
 import Image from "next/image";
 import Link from "next/link";
-import { signIn, signOut } from "next-auth/react"; // ✅ Use next-auth here
-import { useSession } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
+import { useEffect } from "react";
 
 const NavBarClient = () => {
   const { data: session, status } = useSession();
-  console.log(session, status);
+
+  useEffect(() => {
+    const ensureUserInDB = async () => {
+      if (session?.user?.email) {
+        await fetch("/api/auth/ensure-user", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: session.user.email,
+            name: session.user.name || "Unnamed",
+          }),
+        });
+      }
+    };
+
+    if (status === "authenticated") {
+      ensureUserInDB();
+    }
+  }, [session, status]);
 
   if (status === "loading") {
     return <div>Loading...</div>;
@@ -20,30 +39,36 @@ const NavBarClient = () => {
         <Link href="/">
           <Image src="/wellvet.svg" alt="Logo" width={140} height={140} />
         </Link>
-        {session && session.user ? (
-        <>
+
+        {session?.user ? (
           <div className="flex items-center gap-5 text-black">
-            <button  className="text-lg">
-              Create
+            <Link href="/create">
+              <button className="text-lg">Create</button>
+            </Link>
+            <button className="text-lg" onClick={() => signOut()}>
+              Logout
             </button>
-            <button  className="text-lg"onClick={() => signOut()}>Logout</button>
-            <div className="flex items-center gap-2">
+            <Link href={`/profile`}>
               <Image
-                src={session.user.image || ""}
+                src={session.user.image || "/default-avatar.png"}
                 alt="Profile"
                 width={40}
-                height={20}
+                height={40}
                 className="rounded-full"
               />
+            </Link>
           </div>
-          </div>
-        </>
-        ):(
-        <button className="  hover:underline  hover:text-blue-500"onClick={() => signIn("google")}>Login</button>)}
+        ) : (
+          <button
+            className="hover:underline hover:text-blue-500"
+            onClick={() => signIn("google")}
+          >
+            Login
+          </button>
+        )}
       </nav>
     </header>
   );
 };
 
 export default NavBarClient;
-
