@@ -19,13 +19,15 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "dotenv": "^16.5.0",
-    "drizzle-kit": "^0.31.1",
     "drizzle-orm": "^0.43.1",
     "framer-motion": "^12.9.4",
+    "fs": "^0.0.1-security",
     "lucide-react": "^0.507.0",
+    "neondb": "^0.0.2",
     "next": "15.3.1",
     "next-auth": "^4.24.11",
     "next-themes": "^0.4.6",
+    "node": "^22.15.0",
     "pg": "^8.15.6",
     "postgres": "^3.4.5",
     "postgresql": "^0.0.1",
@@ -34,20 +36,23 @@
     "save": "^2.9.0",
     "sonner": "^2.0.3",
     "tailwind-merge": "^3.2.0",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "tsx": "^4.19.3"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
+    "@types/node": "^22.15.3",
+    "@types/pg": "^8.15.1",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "autoprefixer": "^10.4.21",
+    "drizzle-kit": "^0.31.0",
     "eslint": "^9",
     "eslint-config-next": "15.3.1",
     "postcss": "^8.5.3",
     "tailwindcss": "^4.1.5",
     "tw-animate-css": "^1.2.9",
-    "typescript": "^5"
+    "typescript": "^5.8.3"
   }
 }
