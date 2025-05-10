@@ -7,7 +7,6 @@ export const users = pgTable("users", {
   isDoctor: boolean("is_doctor").default(false),
   bio: text("bio"),
 });
-
 export const remedies = pgTable("remedies", {
   id: uuid("id").primaryKey().defaultRandom(),
   title: varchar("title", { length: 255 }).notNull(),
@@ -15,6 +14,7 @@ export const remedies = pgTable("remedies", {
   isVerified: boolean("is_verified").default(false),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
   userId: uuid("user_id").references(() => users.id).notNull(),
+  tags: text("tags").array().notNull().default([]),
 });
 
 export const schema = { users, remedies }; // ✅ export as object for config
