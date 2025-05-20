@@ -24,7 +24,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${workSans.className}`}>
         <SessionProvider>
-        <NavBar />
+        {/* <NavBar /> */}
           {children}
           </SessionProvider>
       </body>
