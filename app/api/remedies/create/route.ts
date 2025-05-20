@@ -1,20 +1,12 @@
 import { db } from "@/drizzle/index";
 import { remedies } from "@/drizzle/schema";
 import { NextRequest, NextResponse } from "next/server";
-import { getUserFromSession } from "@/lib/getUserFromSession";
 
 export async function POST(req: NextRequest) {
   try {
-    const user = await getUserFromSession();
-  
-       if (!user) {
-      console.error("❌ No user found in session");
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-    console.log("User found in session:", user);
-
+ 
     const body = await req.json();
-    const { title, description, tags } = body;
+    const { user, title, description, tags } = body;
 
     if (!title || !description) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
@@ -26,6 +18,10 @@ export async function POST(req: NextRequest) {
         title,
         description,
         tags,
+        likes: 0,
+        dislikes: 0,
+        bydoc: user.isDoctor,
+        comments: [],
         isVerified: false,
         userId: user.id,
       })
