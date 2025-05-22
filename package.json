@@ -14,7 +14,8 @@
     "react-dom": "$react-dom"
   },
   "dependencies": {
-    "@radix-ui/react-slot": "^1.2.2",
+    "@radix-ui/react-avatar": "^1.1.10",
+    "@radix-ui/react-slot": "^1.2.3",
     "@tailwindcss/typography": "^0.5.16",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

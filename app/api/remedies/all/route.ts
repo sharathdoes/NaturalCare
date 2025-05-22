@@ -8,7 +8,7 @@ export async function GET() {
       id: remedies.id,
       title: remedies.title,
       description: remedies.description,
-      tags:remedies.tags,
+      tags: remedies.tags,
       likes: remedies.likes,
       dislikes: remedies.dislikes,
       isVerified: remedies.isVerified,
@@ -17,10 +17,12 @@ export async function GET() {
       user: {
         id: users.id,
         username: users.username,
+        email: users.email,
+        isDoctor: users.isDoctor,
       },
     })
     .from(remedies)
-    .leftJoin(users, eq(remedies.userId, users.id));
+    .innerJoin(users, eq(remedies.userId, users.id)); // ✅ JOIN to populate user
 
   return Response.json(result);
 }

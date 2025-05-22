@@ -1,17 +1,11 @@
 "use client"
 import "./globals.css";
 import NavBar from "@/components/Nav";
-import localFont from "next/font/local";
 
 import { SessionProvider } from 'next-auth/react';
 
-const workSans = localFont({
-  src: "./fonts/WorkSans-Regular.ttf"
-})
-
-const workSansBold = localFont({
-  src: "./fonts/WorkSans-ExtraBold.ttf"
-})
+import { Inter } from "next/font/google"
+const inter = Inter({ subsets: ["latin"] })
 
 
 
@@ -22,9 +16,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${workSans.className}`}>
+      <body className={inter.className}>
         <SessionProvider>
-        {/* <NavBar /> */}
+        <NavBar />
           {children}
           </SessionProvider>
       </body>

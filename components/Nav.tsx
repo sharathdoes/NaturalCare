@@ -4,6 +4,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useEffect } from "react";
+import { Leaf } from "lucide-react";
+import localFont from "next/font/local";
+const workSans = localFont({
+  src: "../app/fonts/WorkSans-Bold.ttf",
+})
 
 const NavBarClient = () => {
   const { data: session, status } = useSession();
@@ -34,12 +39,20 @@ const NavBarClient = () => {
   }
 
   return (
-    <header className="px-5 py-3 bg-white shadow-md">
-      <nav className="flex justify-between items-center pr-5 pl-5">
-        <Link href="/">
-          <Image src="/wellvet.svg" alt="Logo" width={140} height={140} />
-        </Link>
+    <header className=" sticky top-0 z-50 w-full border border-gray-200 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <nav className=" container  px-10 flex h-16 justify-between  items-center ">
+        <div className=" ml-12 flex items-center gap-1 ">
+          <Link href="/">
+            <Leaf className="size-6  text-green-700" />
+          </Link>
+          <h1 className="text-xl font-bold">NaturalCure</h1>
+        </div>
 
+        <div className="flex text-sm  mr-36 gap-5">
+               <h2 className="text-sm font-medium transition-colors hover:text-teal-600">Home</h2>
+               <h2 className="text-sm font-medium transition-colors hover:text-teal-600">Create Remedy  </h2>
+            <h2 className="text-sm font-medium transition-colors hover:text-teal-600">Explore</h2>
+        </div>
         {session?.user ? (
           <div className="flex items-center gap-5 text-black">
             <Link href="/create">
@@ -59,12 +72,15 @@ const NavBarClient = () => {
             </Link>
           </div>
         ) : (
-          <button
-            className="hover:underline hover:text-blue-500"
-            onClick={() => signIn("google")}
-          >
-            Login
-          </button>
+          <>
+       
+            <button
+              className="text-sm font-semibold bg-teal-600 text-white mr-12 py-2 px-4  rounded-lg"
+              onClick={() => signIn("google")}
+            >
+              Sign up
+            </button>
+          </>
         )}
       </nav>
     </header>
