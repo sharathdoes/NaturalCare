@@ -6,9 +6,7 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import { useEffect } from "react";
 import { Leaf } from "lucide-react";
 import localFont from "next/font/local";
-const workSans = localFont({
-  src: "../app/fonts/WorkSans-Bold.ttf",
-})
+
 
 const NavBarClient = () => {
   const { data: session, status } = useSession();
@@ -49,16 +47,14 @@ const NavBarClient = () => {
         </div>
 
         <div className="flex text-sm  mr-36 gap-5">
-               <h2 className="text-sm font-medium transition-colors hover:text-teal-600">Home</h2>
-               <h2 className="text-sm font-medium transition-colors hover:text-teal-600">Create Remedy  </h2>
-            <h2 className="text-sm font-medium transition-colors hover:text-teal-600">Explore</h2>
+               <Link href="/" className="text-sm font-medium transition-colors hover:text-teal-600">Home</Link>
+               <Link href="/create" className="text-sm font-medium transition-colors hover:text-teal-600">Create Remedy  </Link>
+            <Link href="/" className="text-sm font-medium transition-colors hover:text-teal-600">Explore</Link>
         </div>
         {session?.user ? (
           <div className="flex items-center gap-5 text-black">
-            <Link href="/create">
-              <button className="text-lg">Create</button>
-            </Link>
-            <button className="text-lg" onClick={() => signOut()}>
+         
+            <button className="text-sm font-medium" onClick={() => signOut()}>
               Logout
             </button>
             <Link href={`/profile`}>

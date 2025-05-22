@@ -6,7 +6,14 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Plus, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { useSession } from "next-auth/react";
+
+
 const CreateRemedy = () => {
+    const { data: session } = useSession();
+    
+    const user = session?.user;
+    console.log(user)
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [tagInput, setTagInput] = useState("");
@@ -37,9 +44,43 @@ const CreateRemedy = () => {
       handleAddTag();
     }
   };
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const res = await fetch("/api/remedies/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title,
+          description,
+          tags,
+          email: user?.email || ''
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.message || "Something went wrong");
+      }
+
+      // Success logic
+      alert("Remedy published successfully!");
+      setTitle("");
+      setDescription("");
+      setTags([]);
+      setTagInput("");
+    } catch (err: any) {
+      console.error(err);
+    }
+  };
   return (
     <div className="flex items-center justify-center">
-      <div className="m-10 p-6 rounded-lg border-1 w-[50%] h-150 border-gray-300 justify-center ">
+      <form
+        onSubmit={submit}
+        className="m-10 p-6 rounded-lg border-1 w-[50%] h-150 border-gray-300 justify-center "
+      >
         <h1 className="text-xl font-semibold mb-2">Create a New Remedy</h1>
         <p className="text-gray-600 text-sm mb-4">
           Share your natural remedy with the community. Be detailed and specific
@@ -49,10 +90,14 @@ const CreateRemedy = () => {
         <Input
           className="rounded-lg border mb-4  border-gray-200 focus:ring-teal-500 py-2  text-sm px-2 w-full text-black"
           type="text"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
           placeholder="E.g., Honey and Ginger Tea for Sore Throat"
         ></Input>
         <p className="text-sm mb-4 ">Description</p>
         <Textarea
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
           className="rounded-lg border border-gray-200 h-40  focus:ring-teal-500 py-2 px-2 w-full text-black tetx-sm"
           placeholder="Describe your remedy in detail. Include ingredients, preparation steps, usage instructions, and any precautions."
         ></Textarea>
@@ -94,21 +139,21 @@ const CreateRemedy = () => {
                   </Button>
                 </Badge>
               ))}
-
-             
             </div>
           )}
         </div>
-         <div className="flex justify-between  py-6 ">
+        <div className="flex justify-between  py-6 ">
           <Button className="rounded-lg bg-white border border-gray-200 text-black">
             Cancel
           </Button>
-          <Button className="bg-teal-600 rounded-lg text-white hover:bg-teal-700" >
+          <Button
+            type="submit"
+            className="bg-teal-600 rounded-lg text-white hover:bg-teal-700"
+          >
             Publish Remedy
           </Button>
         </div>
-    
-      </div>
+      </form>
     </div>
   );
 };

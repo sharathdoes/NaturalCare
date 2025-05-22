@@ -1,8 +1,8 @@
 // /app/api/remedies/search/route.ts
 import { db } from "@/drizzle/index";
-import { remedies } from "@/drizzle/schema";
+import { remedies ,users} from "@/drizzle/schema";
 import { NextRequest, NextResponse } from "next/server";
-import { ilike, or, sql } from "drizzle-orm";
+import { ilike, or, SQL, sql,eq } from "drizzle-orm";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -13,8 +13,25 @@ export async function GET(req: NextRequest) {
   }
 
   const result = await db
-    .select()
+    .select({
+      id: remedies.id,
+      title: remedies.title,
+      description: remedies.description,
+      tags: remedies.tags,
+      likes: remedies.likes,
+      dislikes: remedies.dislikes,
+      isVerified: remedies.isVerified,
+      createdAt: remedies.createdAt,
+      bydoc: remedies.bydoc,
+      user: {
+        id: users.id,
+        username: users.username,
+        email: users.email,
+        isDoctor: users.isDoctor,
+      },
+    })
     .from(remedies)
+    .innerJoin(users, eq(remedies.userId, users.id))
     .where(
       or(
         ilike(remedies.title, `%${query}%`),
@@ -24,3 +41,5 @@ export async function GET(req: NextRequest) {
 
   return NextResponse.json(result);
 }
+
+

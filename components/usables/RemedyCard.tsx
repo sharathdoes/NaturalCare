@@ -80,8 +80,8 @@ export default function RemedyCard({ remedy }: RemedyCardProps) {
           >
             {remedy.title}
           </Link>
-        <p className=" text-md font-light text-muted-foreground">
-          {remedy.description}...
+        <p className=" text-sm font-light text-muted-foreground">
+          {remedy.description.slice(0,50)}...
         </p>
 
         <div className="flex justify-between items-center">

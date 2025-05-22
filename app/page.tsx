@@ -29,7 +29,22 @@ type RemedyCardProps = {
 
 export default function Page() {
   const [remedies, setRemedies] = useState<RemedyCardProps["remedy"][]>([]);
-  const [search, setSearch] = useState("");
+const [search, setSearch] = useState("");
+const [searchResults, setSearchResults] = useState<RemedyCardProps["remedy"][] | null>(null);
+
+const handleSearch = async () => {
+  if (!search.trim()) return;
+
+  const res = await fetch(`/api/remedies/search?q=${encodeURIComponent(search)}`);
+  if (res.ok) {
+    const data = await res.json();
+    console.log(data)
+    setRemedies(data);
+    setSearch("");
+  } else {
+    setSearchResults([]);
+  }
+};
   const { data: session } = useSession();
 
   useEffect(() => {
@@ -41,10 +56,7 @@ export default function Page() {
     fetchRemedies();
   }, []);
 
-  const filteredRemedies = remedies.filter((r) =>
-    r.title.toLowerCase().includes(search.toLowerCase())
-  );
-console.log("Filtered Remedies: ", filteredRemedies);
+  
   const isDoctor = (session as any)?.user?.isDoctor;
 
   return (
@@ -68,7 +80,7 @@ console.log("Filtered Remedies: ", filteredRemedies);
             placeholder="Search for remedies"
             className="rounded-full pl-10 pr-4 py-6  border border-gray-300 bg-white shadow-sm focus-visible:ring-teal-500 "
           />
-          <Button className="bg-teal-600  absolute right-1 rounded-full text-white">
+          <Button onClick={()=>handleSearch()} className="bg-teal-600  absolute right-1 rounded-full text-white">
             Search
           </Button>
         </div>
@@ -100,8 +112,8 @@ console.log("Filtered Remedies: ", filteredRemedies);
       <section className="w-full py-12 md:py-16  md:px-24 bg-white">
         <h2 className="text-2xl font-semibold mb-4 ">Popular Remedies</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 ">
-      {filteredRemedies.length > 0 ? ( 
-          filteredRemedies.map((f) => {
+      {remedies.length > 0 ? ( 
+          remedies.map((f) => {
             return (
               <RemedyCard
                 key={f.id}
