@@ -3,34 +3,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
-import { useEffect } from "react";
 import { Leaf } from "lucide-react";
-import localFont from "next/font/local";
 
 
 const NavBarClient = () => {
   const { data: session, status } = useSession();
-
-  useEffect(() => {
-    const ensureUserInDB = async () => {
-      if (session?.user?.email) {
-        await fetch("/api/auth/ensure-user", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: session.user.email,
-            name: session.user.name || "Unnamed",
-          }),
-        });
-      }
-    };
-
-    if (status === "authenticated") {
-      ensureUserInDB();
-    }
-  }, [session, status]);
 
   if (status === "loading") {
     return <div>Loading...</div>;
