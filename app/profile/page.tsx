@@ -1,59 +1,99 @@
 "use client";
-import { getUserFromSession } from "@/lib/getUserFromSession";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import { useSession } from "next-auth/react";
+import RemedyCard from "@/components/usables/widthCard";
+import { Timestamp } from "next/dist/server/lib/cache-handlers/types";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from  "@/components/ui/badge";
 
-type Remedy = {
-  id: string;
-  title: string;
-  description: string;
-  isVerified: boolean;
-
-  createdAt: string;
+type RemedyCardProps = {
+  remedy: {
+    id: string;
+    title: string;
+    description: string;
+    isVerified: boolean;
+    user: {
+      id: string;
+      username: string;
+      isDoctor: boolean;
+    };
+    likes: number;
+    dislikes: number;
+    createdAt: Timestamp;
+    tags: string[];
+  };
 };
+
 const Profile = () => {
-  const [remedies, setRemedies] = React.useState<Remedy[]>([]);
-  const [user, setUser] = React.useState<any>(null);
+  const [remedies, setRemedies] = useState<RemedyCardProps["remedy"][]>([]);
+  const { data: session } = useSession();
+  const user = session?.user;
 
   useEffect(() => {
-    const getUserSession = async () => {
-      const se= await fetch("/api/session")
-      const session=await se.json();
-      if (session?.user) {
-        setUser(session.user);
-      }
+    const getUserData = async () => {
+      if (!user?.email) return;
+      console.log(user.email, "user email");
+      const res = await fetch(`/api/user`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: user.email }),
+      });
+
+      const userandposts = await res.json();
+      setRemedies(userandposts.posts || []);
     };
-    const getuserremedies = async () => {
-      const res = await fetch("/api/remedies/all");
-      const remediesData = await res.json();
-      setRemedies(remediesData);
-    };
-    getUserSession();
-    getuserremedies();
-  }, []);
+
+    getUserData();
+  }, [user?.email]);
+
   return (
-    <div>
-      <h1>Profile</h1>
-      <h1>{user?.name}</h1>
-      <h1>{user?.email}</h1>
-      <Image
-        className="h-8 w-8"
-        height={40}
-        width={40}
-        alt="imageofhim"
-        src={user?.image || "/9.png"}
-      />
-      <h1>Remedies</h1>
-      {remedies.map((r: any) => {
-        return (
-          <>
-            <h1>{r.title}</h1>
-            <h2>{r.description}</h2>
-            <h2>{r.price}</h2>
-            <h2>{r.category}</h2>
-          </>
-        );
-      })}
+    <div className="flex  min-h-screen py-2">
+      <div
+        id="profile"
+        className="py-8  pl-4 gap-3 flex w-[36%] flex-col items-center max-w-4xl mx-auto"
+      >
+        <Image
+          className="size-24 rounded-full"
+          height={40}
+          width={40}
+          alt="Profile Picture"
+          src={user?.image || "/9.png"}
+        />
+        <h1 className=" font-bold text-2xl ">{user?.name}</h1>
+        {remedies[0]?.user?.isDoctor ? (
+          <Badge className="rounded-full border text-green-700 bg-green-50 border-gray-200">
+            Verified
+          </Badge>
+        ) : (
+          <Badge className="rounded-full border text-green-700 bg-green-50 border-gray-200">
+            Not Verified
+          </Badge>
+        )}
+      </div>
+      <div id="cards" className="flex w-[64%] flex-col gap-4 mt-4">
+        <h1>Remedies</h1>
+        {remedies.length > 0 ? (
+          remedies.map((f) => (
+            <RemedyCard
+              key={f.id}
+              remedy={{
+                id: f.id,
+                title: f.title,
+                description: f.description,
+                isVerified: f.isVerified,
+                user: f.user,
+                likes: f.likes,
+                dislikes: f.dislikes,
+                tags: f.tags,
+                createdAt: f.createdAt,
+              }}
+            />
+          ))
+        ) : (
+          <h1>No remedies found</h1>
+        )}
+      </div>
     </div>
   );
 };

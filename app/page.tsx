@@ -74,7 +74,6 @@ export default function Page() {
   useEffect(() => {
     // Instead of sending tag as query param, send it in the POST body
     const fetchRemedies = async () => {
-      console.log(tagselected, "is what im sending from here as a tag");
       let url = `/api/remedies/all`;
       let body: any = {};
       if (tagselected) {
@@ -84,7 +83,6 @@ export default function Page() {
         body.tag = sortOption;
       }
       try {
-        console.log(tagselected);
         const res = await fetch(url, {
           method: "POST",
           headers: {

@@ -4,18 +4,39 @@ import { remedies } from "@/drizzle/schema";
 import { eq, and } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function PATCH(
+export async function POST(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
- 
-  const { user, title, description, tags } = await req.json();
+  try {
+    const { user, title, description, tags } = await req.json();
 
-  const result = await db
-    .update(remedies)
-    .set({ title, description, tags })
-    .where(and(eq(remedies.id, params.id), eq(remedies.userId, user.id)))
-    .returning();
+    if (!user?.id || !params?.id) {
+      return NextResponse.json(
+        { error: "Missing user ID or remedy ID" },
+        { status: 400 }
+      );
+    }
 
-  return NextResponse.json(result[0]);
+    const result = await db
+      .update(remedies)
+      .set({ title, description, tags })
+      .where(and(eq(remedies.id, params.id), eq(remedies.userId, user.id)))
+      .returning();
+
+    if (result.length === 0) {
+      return NextResponse.json(
+        { error: "Remedy not found or user not authorized" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json(result[0]);
+  } catch (error) {
+    console.error("Update error:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
+  }
 }
