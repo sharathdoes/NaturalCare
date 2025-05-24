@@ -1,7 +1,8 @@
 "use client"
 import React, { useState } from 'react';
 import { useUser } from '@/context/UserContext';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
+import { Textarea } from '@/components/ui/textarea';
 const EditProfile = () => {
   const { user: contextUser } = useUser();
     const router = useRouter();
@@ -21,6 +22,7 @@ const EditProfile = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+        console.log("calling api")
       const response = await fetch('/api/user/edit',{
         method: 'POST',
         headers: {
@@ -28,7 +30,7 @@ const EditProfile = () => {
         },
         body: JSON.stringify(formData),
       });
-      if (!response.ok) {
+      if (response.ok) {
         const data=await response.json();
         setUser(data.user);
           router.push('/profile');
@@ -47,20 +49,10 @@ const EditProfile = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 border rounded-lg shadow">
+    <div className="max-w-2xl mx-auto mt-10 p-6 border border-gray-200 rounded-lg shadow">
       <h2 className="text-2xl font-semibold mb-4">Edit Profile</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block font-medium">Email</label>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            placeholder={contextUser?.email || ''}
-            className="w-full p-2 border rounded"
-          />
-        </div>
+       
         <div>
           <label className="block font-medium">Username</label>
           <input
@@ -69,7 +61,7 @@ const EditProfile = () => {
             value={formData.username}
             onChange={handleChange}
             placeholder={contextUser?.username || ''}
-            className="w-full p-2 border rounded"
+            className="w-full p-2  text-sm border border-gray-200  rounded"
           />
         </div>
         <div>
@@ -79,23 +71,23 @@ const EditProfile = () => {
             value={formData.bio}
             onChange={handleChange}
             placeholder={contextUser?.bio || ''}
-            className="w-full p-2 border rounded"
+            className="w-full text-sm h-32 p-2 border border-gray-200 rounded"
           />
         </div>
         <div>
           <label className="block font-medium">Educational Background</label>
-          <input
-            type="text"
+           <Textarea
             name="educationalBackground"
-            value={formData.educationalBackground}
-            onChange={handleChange}
-            placeholder={contextUser?.educationalBackground || ''}
-            className="w-full p-2 border rounded"
-          />
+          value={formData.educationalBackground}
+          onChange={handleChange}
+          className="rounded-lg border text-sm border-gray-200 h-32  focus:ring-teal-500 py-2 px-2 w-full text-black tetx-sm"
+          placeholder={contextUser?.educationalBackground || ''}
+        ></Textarea>
         </div>
+           
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+          className="w-full bg-teal-700 text-white  text-sm py-2 rounded-sm"
         >
           Save Changes
         </button>

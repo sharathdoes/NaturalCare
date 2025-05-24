@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
@@ -26,6 +27,37 @@ type RemedyCardProps = {
 };
 
 export default function RemedyCard({ remedy }: RemedyCardProps) {
+  const [likes, setLikes] = useState(remedy.likes);
+  const [dislikes, setDislikes] = useState(remedy.dislikes);
+  const [userReaction, setUserReaction] = useState<"like" | "dislike" | null>(null);
+
+  const handleReaction = async (type: "like" | "dislike") => {
+    try {
+      const updatedLikes = type === "like" ? likes + 1 : likes;
+      const updatedDislikes = type === "dislike" ? dislikes + 1 : dislikes;
+
+      const res = await fetch("/api/remedies/likes_dislikes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: remedy.id,
+          likes: updatedLikes,
+          dislikes: updatedDislikes,
+        }),
+      });
+
+      if (res.ok) {
+        setLikes(updatedLikes);
+        setDislikes(updatedDislikes);
+        setUserReaction(type);
+      } else {
+        alert("Failed to update like/dislike.");
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const handleVerify = async () => {
     try {
       const res = await fetch("/api/remedies/verify", {
@@ -34,7 +66,7 @@ export default function RemedyCard({ remedy }: RemedyCardProps) {
         body: JSON.stringify({ id: remedy.id }),
       });
       if (res.ok) {
-        window.location.reload(); // better: optimistic UI update
+        window.location.reload();
       } else {
         alert("Failed to verify remedy.");
       }
@@ -45,7 +77,7 @@ export default function RemedyCard({ remedy }: RemedyCardProps) {
 
   return (
     <Card className="overflow-hidden transition-all rounded-lg h-64 w-108 border border-gray-300">
-      {/* Header: Avatar, username, date, doctor badge */}
+      {/* Header */}
       <div className="flex items-center pl-4 pt-1 pr-4 justify-between">
         <div className="flex gap-2 items-center">
           <Avatar className="h-8 w-8">
@@ -81,18 +113,15 @@ export default function RemedyCard({ remedy }: RemedyCardProps) {
           )}
         </div>
 
-        {/* Verified / Verify badge */}
+        {/* Verify badge */}
         <div className="flex items-center gap-2">
           {remedy.isVerified ? (
-            <Badge
-              variant="default"
-              className="rounded-full border text-green-700 bg-green-50 border-gray-200"
-            >
+            <Badge className="rounded-full border text-green-700 bg-green-50 border-gray-200">
               Verified
             </Badge>
           ) : remedy.currentUserIsDoctor ? (
             <Badge
-              className="rounded-full border text-gray-700  border-gray-200 cursor-pointer"
+              className="rounded-full border text-gray-700 border-gray-200 cursor-pointer"
               onClick={handleVerify}
             >
               Verify this
@@ -106,7 +135,7 @@ export default function RemedyCard({ remedy }: RemedyCardProps) {
       </div>
 
       <CardContent className="space-y-2">
-        {/* Remedy title */}
+        {/* Title */}
         <Link
           href={`/remedy/${remedy.id}`}
           className="text-lg font-bold hover:underline"
@@ -114,7 +143,7 @@ export default function RemedyCard({ remedy }: RemedyCardProps) {
           {remedy.title}
         </Link>
 
-        {/* Remedy description */}
+        {/* Description */}
         <p className="text-sm font-light text-muted-foreground">
           {remedy.description.slice(0, 50)}...
         </p>
@@ -134,18 +163,30 @@ export default function RemedyCard({ remedy }: RemedyCardProps) {
         {/* Likes / Dislikes / Share */}
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-4">
-            <div className="flex items-center">
-              <ThumbsUp className="w-5 h-5 font-light" />
-              <div className="ml-2 mt-1 text-sm">{remedy.likes}</div>
+            <div
+              className="flex items-center cursor-pointer"
+              onClick={() => handleReaction("like")}
+            >
+              <ThumbsUp
+                className={`w-5 h-5 font-light ${
+                  userReaction === "like" ? "text-teal-600" : ""
+                }`}
+              />
+              <div className="ml-2 mt-1 text-sm">{likes}</div>
             </div>
-            <div className="flex items-center">
-              <ThumbsDown className="w-5 h-5 font-light" />
-              <div className="ml-2 mt-1 text-sm">{remedy.dislikes}</div>
+            <div
+              className="flex items-center cursor-pointer"
+              onClick={() => handleReaction("dislike")}
+            >
+              <ThumbsDown
+                className={`w-5 h-5 font-light ${
+                  userReaction === "dislike" ? "text-teal-600" : ""
+                }`}
+              />
+              <div className="ml-2 mt-1 text-sm">{dislikes}</div>
             </div>
           </div>
-          <div className="flex items-center">
-            <Share2 className="w-5 h-5 font-light cursor-pointer" />
-          </div>
+          <Share2 className="w-5 h-5 font-light cursor-pointer" />
         </div>
       </CardContent>
     </Card>

@@ -7,7 +7,9 @@ import { Badge } from "@/components/ui/badge";
 import { useUser } from "@/context/UserContext";
 import { useSession } from "next-auth/react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
+import { Link } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 type UserInfo = {
   id?: number;
   email?: string;
@@ -36,6 +38,7 @@ type RemedyCardProps = {
 };
 
 const Profile = () => {
+  const router = useRouter();
   const [remedies, setRemedies] = useState<RemedyCardProps["remedy"][]>([]);
   const [user, setUser] = useState<UserInfo | null>(null);
   const { user: contextUser } = useUser();
@@ -113,6 +116,7 @@ const Profile = () => {
                   </div>
                 </div>
               </div>
+                <Button  className="p-4 mb-4 shadow-sm w-full border border-gray-300 rounded-lg text-black" onClick={()=>{router.push('/profile/edit')}} > Edit Profile</Button>
 
               {/* Expertise */}
               <div className="p-6 border border-gray-200 shadow-sm rounded-lg bg-white mb-6">
