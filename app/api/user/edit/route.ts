@@ -5,8 +5,8 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
 
-  const {user, username, bio,educationalBackground } = await req.json();
-  await db.update(users).set({ username, bio,educationalBackground }).where(eq(users.id, user.id));
+  const {email, username, bio,educationalBackground } = await req.json();
+  await db.update(users).set({ username, bio,educationalBackground }).where(eq(users.email, email));
 
   return NextResponse.json({ success: true });
 }

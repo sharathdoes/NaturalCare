@@ -41,7 +41,7 @@ const {setUser}= useUser();
         <div className="flex text-sm  mr-36 gap-5">
                <Link href="/" className="text-sm font-medium transition-colors hover:text-teal-600">Home</Link>
                <Link href="/create" className="text-sm font-medium transition-colors hover:text-teal-600">Create Remedy  </Link>
-            <Link href="/" className="text-sm font-medium transition-colors hover:text-teal-600">Explore</Link>
+            <Link href="/about" className="text-sm font-medium transition-colors hover:text-teal-600">About</Link>
         </div>
         {session?.user ? (
           <div className="flex items-center gap-5 text-black">

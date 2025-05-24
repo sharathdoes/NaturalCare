@@ -5,16 +5,18 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
-  const { email } = body;
+  const { id } = body;
   const user = await db.query.users.findFirst({
-    where: eq(users.email, email),
+    where: eq(users.id, id),
   });
 
   if (!user) {
     return NextResponse.json({ error: "User not found" }, { status: 404 });
   }
 
-  
+  const posts = await db.query.remedies.findMany({
+    where: eq(remedies.userId, user.id)
+  });
 
-  return NextResponse.json( user);
+  return NextResponse.json({ user, posts });
 }

@@ -4,9 +4,9 @@ import Image from "next/image";
 import RemedyCard from "@/components/usables/widthCard";
 import { Timestamp } from "next/dist/server/lib/cache-handlers/types";
 import { Badge } from "@/components/ui/badge";
-import { useUser } from "@/context/UserContext";
-import { useSession } from "next-auth/react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useParams } from "next/navigation";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 type UserInfo = {
   id?: number;
@@ -35,30 +35,27 @@ type RemedyCardProps = {
   };
 };
 
-const Profile = () => {
+const PublicProfile = () => {
   const [remedies, setRemedies] = useState<RemedyCardProps["remedy"][]>([]);
   const [user, setUser] = useState<UserInfo | null>(null);
-  const { user: contextUser } = useUser();
-  const { data: session } = useSession();
+  const { id } = useParams();
 
-  useEffect(() => {
-    setUser(contextUser);
-  }, [contextUser]);
+
 
   useEffect(() => {
     const getUserData = async () => {
-      if (!user?.email) return;
-      const res = await fetch(`/api/user/userpage`, {
+      const res = await fetch(`/api/user`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: user.email }),
+        body: JSON.stringify({ id: id }),
       });
       const userandposts = await res.json();
       setRemedies(userandposts.posts || []);
+      setUser(userandposts.user || null);
     };
 
     getUserData();
-  }, [user?.email]);
+  }, []);
 
   const verifiedRemedies = remedies.filter((remedy) => remedy.isVerified);
 
@@ -73,15 +70,11 @@ const Profile = () => {
               <div className="p-8 mb-6 mr-4">
                 <div className="flex flex-col items-center text-center">
                   <div className="relative mb-6">
-                    <div className="rounded-full p-1">
-                      <Image
-                        className="size-24 rounded-full"
-                        height={96}
-                        width={96}
-                        alt="Profile Picture"
-                        src={session?.user?.image || "/9.png"}
-                      />
-                    </div>
+                     <Avatar className="h-16 w-16">
+            <AvatarFallback className="bg-teal-100 text-teal-800">
+              {user?.username?.substring(0, 2).toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
                   </div>
                   <h1 className="text-2xl font-bold text-gray-900 mb-3">
                     {user?.username || "Loading..."}
@@ -150,10 +143,10 @@ const Profile = () => {
                        All Remedies ({remedies.length})
                     </TabsTrigger>
                     <TabsTrigger value="verified" className="data-[state=active]:bg-white rounded-lg font-medium">
-                      Verified ({verifiedRemedies.length})
+                       Verified ({verifiedRemedies.length})
                     </TabsTrigger>
                     <TabsTrigger value="about" className="data-[state=active]:bg-white rounded-lg font-medium">
-                       About
+                      ℹ About
                     </TabsTrigger>
                   </TabsList>
 
@@ -229,4 +222,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default PublicProfile;

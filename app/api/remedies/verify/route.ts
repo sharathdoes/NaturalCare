@@ -5,10 +5,8 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   const body=req.json();
-  const {user,id}= await body;
-  if (!user || !user.isDoctor)
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-
+  const {id}= await body;
+  
   await db.update(remedies).set({ isVerified: true }).where(eq(remedies.id, id));
   return NextResponse.json({ success: true });
 }

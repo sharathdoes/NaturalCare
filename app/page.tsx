@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Search, Filter } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Timestamp } from "next/dist/server/lib/cache-handlers/types";
-
+import { useUser } from "@/context/UserContext";
 type RemedyCardProps = {
   remedy: {
     id: string;
@@ -26,7 +26,9 @@ type RemedyCardProps = {
     createdAt: Timestamp;
     tags: string[];
   };
+  currentUserIsDoctor: boolean;  // new prop
 };
+
 
 const TAG_OPTIONS = [
   { label: "Dry Skin", value: "dry skin" },
@@ -41,8 +43,23 @@ const SORT_OPTIONS = [
   { label: "Popular", value: "popular" },
   { label: "Verified", value: "verified" },
 ];
+type UserInfo = {
+  id?: number;
+  email?: string;
+  username?: string;
+  isDoctor?: boolean;
+  bio?: string;
+  educationalBackground?: string;
+};
 
 export default function Page() {
+    const [user, setUser] = useState<UserInfo | null>(null);
+  
+  const { user: contextUser } = useUser();
+   useEffect(() => {
+      setUser(contextUser);
+    }, [contextUser]);
+  
   const [remedies, setRemedies] = useState<RemedyCardProps["remedy"][]>([]);
   const [search, setSearch] = useState("");
   const [searchResults, setSearchResults] = useState<RemedyCardProps["remedy"][] | null>(null);
@@ -204,6 +221,7 @@ export default function Page() {
                     dislikes: f.dislikes,
                     tags: f.tags,
                     createdAt: f.createdAt,
+                    currentUserIsDoctor: user?.isDoctor || false, 
                   }}
                 />
               );
