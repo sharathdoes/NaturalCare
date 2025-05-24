@@ -4,11 +4,26 @@ import Image from "next/image";
 import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { Leaf } from "lucide-react";
+import { useEffect } from "react";
 
-
+import {useUser } from "@/context/UserContext";
 const NavBarClient = () => {
   const { data: session, status } = useSession();
-
+const {setUser}= useUser();
+    useEffect(() => {
+      const getUserData = async () => {
+                if (!session?.user?.email || !session?.user?.name) return;
+      const res=await fetch(`/api/auth/userSignIn`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: session?.user?.email, name: session?.user?.name }),
+      });
+      const data = await res.json();
+      setUser(data.user);
+      console.log(data.user, "user data");
+    }
+  getUserData();
+    }, [session?.user]);
   if (status === "loading") {
     return <div>Loading...</div>;
   }

@@ -1,11 +1,21 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { useSession } from "next-auth/react";
 import RemedyCard from "@/components/usables/widthCard";
 import { Timestamp } from "next/dist/server/lib/cache-handlers/types";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from  "@/components/ui/badge";
+import { Badge } from "@/components/ui/badge";
+import { useUser } from "@/context/UserContext";
+import { useSession } from "next-auth/react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
+type UserInfo = {
+  id?: number;
+  email?: string;
+  username?: string;
+  isDoctor?: boolean;
+  bio?: string;
+  educationalBackground?: string;
+};
 
 type RemedyCardProps = {
   remedy: {
@@ -27,19 +37,22 @@ type RemedyCardProps = {
 
 const Profile = () => {
   const [remedies, setRemedies] = useState<RemedyCardProps["remedy"][]>([]);
+  const [user, setUser] = useState<UserInfo | null>(null);
+  const { user: contextUser } = useUser();
   const { data: session } = useSession();
-  const user = session?.user;
+
+  useEffect(() => {
+    setUser(contextUser);
+  }, [contextUser]);
 
   useEffect(() => {
     const getUserData = async () => {
       if (!user?.email) return;
-      console.log(user.email, "user email");
-      const res = await fetch(`/api/user`, {
+      const res = await fetch(`/api/user/userpage`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: user.email }),
       });
-
       const userandposts = await res.json();
       setRemedies(userandposts.posts || []);
     };
@@ -47,52 +60,170 @@ const Profile = () => {
     getUserData();
   }, [user?.email]);
 
+  const verifiedRemedies = remedies.filter((remedy) => remedy.isVerified);
+
   return (
-    <div className="flex  min-h-screen py-2">
-      <div
-        id="profile"
-        className="py-8  pl-4 gap-3 flex w-[36%] flex-col items-center max-w-4xl mx-auto"
-      >
-        <Image
-          className="size-24 rounded-full"
-          height={40}
-          width={40}
-          alt="Profile Picture"
-          src={user?.image || "/9.png"}
-        />
-        <h1 className=" font-bold text-2xl ">{user?.name}</h1>
-        {remedies[0]?.user?.isDoctor ? (
-          <Badge className="rounded-full border text-green-700 bg-green-50 border-gray-200">
-            Verified
-          </Badge>
-        ) : (
-          <Badge className="rounded-full border text-green-700 bg-green-50 border-gray-200">
-            Not Verified
-          </Badge>
-        )}
-      </div>
-      <div id="cards" className="flex w-[64%] flex-col gap-4 mt-4">
-        <h1>Remedies</h1>
-        {remedies.length > 0 ? (
-          remedies.map((f) => (
-            <RemedyCard
-              key={f.id}
-              remedy={{
-                id: f.id,
-                title: f.title,
-                description: f.description,
-                isVerified: f.isVerified,
-                user: f.user,
-                likes: f.likes,
-                dislikes: f.dislikes,
-                tags: f.tags,
-                createdAt: f.createdAt,
-              }}
-            />
-          ))
-        ) : (
-          <h1>No remedies found</h1>
-        )}
+    <div className="min-h-screen">
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex flex-col lg:flex-row gap-8 max-w-7xl mx-auto">
+          {/* Profile Sidebar */}
+          <div className="lg:w-1/3 xl:w-1/4">
+            <div className="sticky top-8">
+              {/* Profile Header */}
+              <div className="p-8 mb-6 mr-4">
+                <div className="flex flex-col items-center text-center">
+                  <div className="relative mb-6">
+                    <div className="rounded-full p-1">
+                      <Image
+                        className="size-24 rounded-full"
+                        height={96}
+                        width={96}
+                        alt="Profile Picture"
+                        src={session?.user?.image || "/9.png"}
+                      />
+                    </div>
+                  </div>
+                  <h1 className="text-2xl font-bold text-gray-900 mb-3">
+                    {user?.username || "Loading..."}
+                  </h1>
+                  {remedies[0]?.user?.isDoctor ? (
+                    <Badge className="mb-4 bg-green-100 text-teal-600 font-semibold border-0 rounded-lg">
+                       Verified 
+                    </Badge>
+                  ) : (
+                    <Badge className="mb-4 bg-green-100 text-teal-600 font-semibold border-0 rounded-lg">
+                       Unverified
+                    </Badge>
+                  )}
+                  <div className="flex gap-6 text-center">
+                    <div>
+                      <div className="text-2xl font-bold text-gray-900">{remedies.length}</div>
+                      <div className="text-sm text-gray-600">Remedies</div>
+                    </div>
+                    <div>
+                      <div className="text-2xl font-bold text-gray-900">{verifiedRemedies.length}</div>
+                      <div className="text-sm text-gray-600">Verified</div>
+                    </div>
+                    <div>
+                      <div className="text-2xl font-bold text-gray-900">
+                        {remedies.reduce((acc, remedy) => acc + remedy.likes, 0)}
+                      </div>
+                      <div className="text-sm text-gray-600">Likes</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Expertise */}
+              <div className="p-6 border border-gray-200 shadow-sm rounded-lg bg-white mb-6">
+                <h2 className="text-lg font-semibold text-gray-900 mb-3" >Expertise</h2>
+                <div className="flex flex-wrap gap-2">
+                  <Badge className="bg-green-100 text-teal-600 font-semibold border-0 rounded-lg">
+                     Ayurveda
+                  </Badge>
+                  <Badge className="bg-green-100 text-teal-600 font-semibold border-0 rounded-lg">
+                     Skin Care
+                  </Badge>
+                  <Badge className="bg-green-100 text-teal-600 font-semibold border-0 rounded-lg">
+                     Nutrition
+                  </Badge>
+                 
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Main Content */}
+          <div className="lg:w-2/3 xl:w-3/4">
+            <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+              <div className="bg-teal-600 px-8 py-6">
+                <h1 className="text-2xl font-bold text-white flex items-center gap-3">
+                  🏥 Health Remedies
+                </h1>
+                <p className="text-white mt-1">Discover natural healing solutions</p>
+              </div>
+
+              <div className="p-8">
+                <Tabs defaultValue="remedies" className="w-full">
+                  <TabsList className="grid w-full grid-cols-3 mb-8 bg-gray-100 p-1 rounded-md">
+                    <TabsTrigger value="remedies" className="data-[state=active]:bg-white rounded-lg font-medium">
+                      📋 All Remedies ({remedies.length})
+                    </TabsTrigger>
+                    <TabsTrigger value="verified" className="data-[state=active]:bg-white rounded-lg font-medium">
+                      ✅ Verified ({verifiedRemedies.length})
+                    </TabsTrigger>
+                    <TabsTrigger value="about" className="data-[state=active]:bg-white rounded-lg font-medium">
+                      ℹ️ About
+                    </TabsTrigger>
+                  </TabsList>
+
+                    <TabsContent value="remedies" className="space-y-6">
+                    <div className="max-h-[600px] overflow-y-auto pr-4">
+                      {remedies.length > 0 ? (
+                      <div className="grid gap-6">
+                        {remedies.map((remedy) => (
+                        <div key={remedy.id}>
+                          <RemedyCard remedy={remedy} />
+                        </div>
+                        ))}
+                      </div>
+                      ) : (
+                      <div className="text-center py-16">
+                        <div className="text-6xl mb-4">🌱</div>
+                        <h3 className="text-xl font-semibold text-gray-900 mb-2">No remedies yet</h3>
+                        <p className="text-gray-600">Start sharing your knowledge to help others!</p>
+                      </div>
+                      )}
+                    </div>
+                    </TabsContent>
+
+                  <TabsContent value="verified" className="space-y-6">
+                    {verifiedRemedies.length > 0 ? (
+                      <div className="grid gap-6">
+                        {verifiedRemedies.map((remedy) => (
+                          <div key={remedy.id}>
+                            <RemedyCard remedy={remedy} />
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-center py-16">
+                        <div className="text-6xl mb-4">⏳</div>
+                        <h3 className="text-xl font-semibold text-gray-900 mb-2">No verified remedies yet</h3>
+                        <p className="text-gray-600">Your remedies are pending verification by our medical team.</p>
+                      </div>
+                    )}
+                  </TabsContent>
+
+                  <TabsContent value="about" className="space-y-6">
+                    <div className="bg-blue-50 rounded-xl p-6 border border-blue-200">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                        👋 About {user?.username}
+                      </h3>
+                      <div className="space-y-4 text-gray-700">
+                        <p>
+                          <strong>Bio:</strong> {user?.bio || "No bio provided yet."}
+                        </p>
+                        <p>
+                          <strong>Educational Background:</strong>{" "}
+                          {user?.educationalBackground || "Not provided yet."}
+                        </p>
+                        <p>
+                          <strong>Verification Status:</strong>{" "}
+                          {remedies[0]?.user?.isDoctor ? (
+                            <span className="text-green-600 font-medium">✓ Verified Medical Professional</span>
+                          ) : (
+                            <span className="text-amber-600 font-medium">⏳ Pending Verification</span>
+                          )}
+                        </p>
+                      </div>
+                    </div>
+                  </TabsContent>
+                </Tabs>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

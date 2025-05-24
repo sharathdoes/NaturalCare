@@ -14,7 +14,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "User not found" }, { status: 404 });
   }
 
-  
+  const posts = await db.query.remedies.findMany({
+    where: eq(remedies.userId, user.id)
+  });
 
-  return NextResponse.json( user);
+  return NextResponse.json({ user, posts });
 }

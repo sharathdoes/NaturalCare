@@ -42,97 +42,43 @@ export default function RemedyCard({ remedy }: RemedyCardProps) {
   };
 
   return (
-    <Card className="overflow-hidden transition-all  rounded-lg h-64 w-108 border-1 border-gray-300">
-      <div className="flex  items-center pl-4 pt-1 pr-4 justify-between">
-        <div className="flex  gap-2">
-          <Avatar className="h-8 w-8">
-            <AvatarFallback className="bg-teal-100 text-teal-800">
-              {remedy?.user?.username.substring(0, 2).toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
-          <div className="flex flex-col  justify-center">
-            <h1 className="text-sm  font-semibold">{remedy?.user?.username}</h1>
-            <p className="text-gray-600 text-sm">
-              {(() => {
-                const date = new Date(remedy?.createdAt);
-                const now = new Date();
-                const diff = now.getTime() - date.getTime();
-                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-                if (days < 1) return "Today";
-                if (days < 7) return `${days} days ago`;
-                if (days < 30) return `${Math.floor(days / 7)} weeks ago`;
-                if (days < 365) return `${Math.floor(days / 30)} months ago`;
-                return `${Math.floor(days / 365)} years ago`;
-              })()}
-            </p>
-          </div>
-          {remedy?.user?.isDoctor && (
-            <Badge className="text-blue-600 rounded-full h-5 font-semibold bg-blue-50 border-1 border-gray-300">
-              Doctor
-            </Badge>
-          )}
-        </div>
+   <Card className="rounded-lg border border-gray-200 shadow-sm p-4">
 
-        <div className="flex  justify-between items-center">
-          {remedy?.isVerified ? (
-            <Badge
-              variant="default"
-              className="rounded-full border text-green-700 bg-green-50 border-gray-200"
-            >
-              Verified
-            </Badge>
-          ) : (
-            <Badge className="rounded-full border text-gray-700 bg-green-50 border-gray-200">
-              Unverified
-            </Badge>
-          )}
+
+  <CardContent className="space-y-3 pt-3">
+    <Link href={`/remedy/${remedy?.id}`} className="text-lg font-bold hover:underline">
+      {remedy?.title}
+    </Link>
+    <p className="text-sm text-muted-foreground">
+      {remedy?.description.slice(0, 400)}...
+    </p>
+
+    <div className="flex flex-wrap gap-2">
+      {remedy.tags.map((tag, idx) => (
+        <Badge
+          key={idx}
+          className="bg-emerald-50 text-emerald-800 rounded-full px-3 py-1 text-xs font-medium border border-gray-200"
+        >
+          {tag}
+        </Badge>
+      ))}
+    </div>
+
+    <div className="flex justify-between items-center pt-2 border-t border-gray-100 mt-2">
+      <div className="flex gap-4 text-sm text-gray-500">
+        <div className="flex items-center gap-1">
+          <ThumbsUp className="size-4" />
+          {remedy?.likes}
+        </div>
+        <div className="flex items-center gap-1">
+          <ThumbsDown className="size-4" />
+          {remedy?.dislikes}
         </div>
       </div>
-      <CardContent className=" space-y-2">
-        <Link
-          href={`/remedy/${remedy?.id}`}
-          className="text-lg font-bold hover:underline"
-        >
-          {remedy.title}
-        </Link>
-        <p className=" text-sm font-light text-muted-foreground">
-          {remedy?.description.slice(0, 50)}...
-        </p>
+      <Share2 className="size-4 cursor-pointer text-gray-500 hover:text-black" />
+    </div>
+  </CardContent>
+</Card>
 
-        <div className="flex justify-between items-center">
-          <div className="flex gap-2">
-            {remedy?.tags.map((tag, index) => (
-              <Badge
-                key={index}
-                className="bg-green-50/50 text-green-700 rounded-full py-2 px-2 border-1 border-gray-100 font-semibold hover:bg-teal-50 cursor-pointer"
-              >
-                {tag}
-              </Badge>
-            ))}
-          </div>
-        </div>
-        <div className="flex py-2 justify-between items-center">
-          <div className="flex items-center ">
-            <div className="flex items-center">
-            
-            
-                <ThumbsUp  className="size-5 font-light"/>
-         
-              <div className="ml-2 mt-1  text-sm">{remedy.likes}</div>
-            </div>
-            <div className="flex items-center pl-4 ">
-      
-              
-                <ThumbsDown  className="size-5  font-light"/>{" "}
-             
-              <div  className="ml-2 mt-1  text-sm" >{remedy.dislikes}</div>{" "}
-            </div>
-          </div>
-          <div className="flex  size-10 font-light ">
-            <Share2 /> 
-          </div>
-        </div>
-      </CardContent>
-    </Card>
   );
 }

@@ -7,7 +7,7 @@ import { SessionProvider } from 'next-auth/react';
 import { Inter } from "next/font/google"
 const inter = Inter({ subsets: ["latin"] })
 
-
+import { UserProvider } from "@/context/UserContext";
 
 export default function RootLayout({
   children,
@@ -18,8 +18,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <SessionProvider>
+          <UserProvider>
         <NavBar />
           {children}
+          </UserProvider>
           </SessionProvider>
       </body>
     </html>
