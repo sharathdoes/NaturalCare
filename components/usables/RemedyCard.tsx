@@ -38,12 +38,10 @@ export default function RemedyCard({ remedy }: RemedyCardProps) {
     let newReaction: "like" | "dislike" | null = userReaction;
 
     if (userReaction === type) {
-      // User is undoing their reaction
       if (type === "like") updatedLikes -= 1;
       else updatedDislikes -= 1;
       newReaction = null;
     } else {
-      // Switching reaction or reacting for first time
       if (type === "like") {
         updatedLikes += 1;
         if (userReaction === "dislike") updatedDislikes -= 1;

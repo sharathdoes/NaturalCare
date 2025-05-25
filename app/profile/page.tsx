@@ -89,7 +89,7 @@ const Profile = () => {
                   <h1 className="text-2xl font-bold text-gray-900 mb-3">
                     {user?.username || "Loading..."}
                   </h1>
-                  {remedies[0]?.user?.isDoctor ? (
+                  {user?.isDoctor ? (
                     <Badge className="mb-4 bg-green-100 text-teal-600 font-semibold border-0 rounded-lg">
                        Verified 
                     </Badge>

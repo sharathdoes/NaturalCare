@@ -12,6 +12,7 @@ const EditProfile = () => {
     username: contextUser?.username || '',
     bio: contextUser?.bio || '',
     educationalBackground: contextUser?.educationalBackground || '',
+    isDoctor: contextUser?.isDoctor || false,
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -84,6 +85,16 @@ const EditProfile = () => {
           placeholder={contextUser?.educationalBackground || ''}
         ></Textarea>
         </div>
+        <div className="flex items-center space-x-2">
+          <input
+            type="checkbox"
+            name="isDoctor"
+            checked={formData.isDoctor}
+            onChange={(e) => setFormData(prev => ({ ...prev, isDoctor: e.target.checked }))}
+            className="h-4 w-4 text-teal-600 border-gray-300 rounded focus:ring-teal-500"
+          />
+          <label className="text-sm">I am a doctor</label>
+          </div>
            
         <button
           type="submit"
