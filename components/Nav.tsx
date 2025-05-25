@@ -46,7 +46,7 @@ const NavBarClient = () => {
         </div>
 
         {/* Desktop Links */}
-        <div className="hidden md:flex md:pr-16 text-sm gap-5">
+        <div className="hidden md:flex md:pr-20 text-sm gap-5">
           <Link href="/" className="hover:text-teal-600">Home</Link>
           <Link href="/create" className="hover:text-teal-600">Create Remedy</Link>
           <Link href="/about" className="hover:text-teal-600">About</Link>
@@ -77,7 +77,7 @@ const NavBarClient = () => {
               className="text-sm font-semibold bg-teal-600 text-white py-2 px-4 rounded-lg"
               onClick={() => signIn("google")}
             >
-              Sign up
+              Sign In
             </button>
           )}
         </div>
@@ -128,7 +128,7 @@ const NavBarClient = () => {
                 setMenuOpen(false);
               }}
             >
-              Sign up
+              Sign In
             </button>
           )}
         </div>
