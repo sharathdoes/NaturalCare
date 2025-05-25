@@ -33,8 +33,26 @@ export default function RemedyCard({ remedy }: RemedyCardProps) {
 
   const handleReaction = async (type: "like" | "dislike") => {
     try {
-      const updatedLikes = type === "like" ? likes + 1 : likes;
-      const updatedDislikes = type === "dislike" ? dislikes + 1 : dislikes;
+      let updatedLikes = likes;
+    let updatedDislikes = dislikes;
+    let newReaction: "like" | "dislike" | null = userReaction;
+
+    if (userReaction === type) {
+      // User is undoing their reaction
+      if (type === "like") updatedLikes -= 1;
+      else updatedDislikes -= 1;
+      newReaction = null;
+    } else {
+      // Switching reaction or reacting for first time
+      if (type === "like") {
+        updatedLikes += 1;
+        if (userReaction === "dislike") updatedDislikes -= 1;
+      } else {
+        updatedDislikes += 1;
+        if (userReaction === "like") updatedLikes -= 1;
+      }
+      newReaction = type;
+    }
 
       const res = await fetch("/api/remedies/likes_dislikes", {
         method: "POST",
@@ -46,11 +64,11 @@ export default function RemedyCard({ remedy }: RemedyCardProps) {
         }),
       });
 
-      if (res.ok) {
-        setLikes(updatedLikes);
-        setDislikes(updatedDislikes);
-        setUserReaction(type);
-      } else {
+     if (res.ok) {
+      setLikes(updatedLikes);
+      setDislikes(updatedDislikes);
+      setUserReaction(newReaction); 
+    } else {
         alert("Failed to update like/dislike.");
       }
     } catch (err) {

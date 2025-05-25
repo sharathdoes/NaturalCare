@@ -156,7 +156,7 @@ export default function Page() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search for remedies"
-            className="rounded-full pl-10 pr-4 py-6  border border-gray-300 bg-white shadow-sm focus-visible:ring-teal-500 "
+            className="rounded-full pl-10 pr-4 py-3 md:py-6  border border-gray-300 bg-white shadow-sm focus-visible:ring-teal-500 "
           />
           <Button onClick={handleSearch} className="bg-teal-600  absolute right-1 rounded-full text-white">
             Search
@@ -201,7 +201,7 @@ export default function Page() {
             ))}
           </div>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 ">
+        <div className="grid grid-cols-1 pl-10 md:grid-cols-2 md:pl-0 lg:grid-cols-3 gap-6 ">
           {remedies.length > 0 ? (
             remedies.map((f) => {
               return (

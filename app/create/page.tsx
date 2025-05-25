@@ -79,7 +79,7 @@ const CreateRemedy = () => {
     <div className="flex items-center justify-center">
       <form
         onSubmit={submit}
-        className="m-10 p-6 rounded-lg border-1 w-[50%] h-150 border-gray-300 justify-center "
+        className="m-10 p-6 rounded-lg border-1 w-[80%] md:w-[40%] h-150 border-gray-300 justify-center "
       >
         <h1 className="text-xl font-semibold mb-2">Create a New Remedy</h1>
         <p className="text-gray-600 text-sm mb-4">
