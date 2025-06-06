@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
     })
     .from(remedies)
     .innerJoin(users, eq(remedies.userId, users.id))
-    .limit(12)
+   
   }
  else if (tag === "popular") {
     // Sort by most likes
