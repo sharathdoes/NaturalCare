@@ -49,6 +49,7 @@ const NavBarClient = () => {
         <div className="hidden md:flex md:pr-20 text-sm gap-5">
           <Link href="/" className="hover:text-teal-600">Home</Link>
           <Link href="/create" className="hover:text-teal-600">Create Remedy</Link>
+          <Link href="/research" className="hover:text-teal-600">Research</Link>
           <Link href="/about" className="hover:text-teal-600">About</Link>
         </div>
 
@@ -95,6 +96,7 @@ const NavBarClient = () => {
         <div className="md:hidden px-4 py-3 bg-white shadow-md border-t flex flex-col gap-3 text-sm">
           <Link href="/" className="hover:text-teal-600" onClick={() => setMenuOpen(false)}>Home</Link>
           <Link href="/create" className="hover:text-teal-600" onClick={() => setMenuOpen(false)}>Create Remedy</Link>
+          <Link href="/research" className="hover:text-teal-600" onClick={() => setMenuOpen(false)}>Research</Link>
           <Link href="/about" className="hover:text-teal-600" onClick={() => setMenuOpen(false)}>About</Link>
           {session?.user ? (
             <>
