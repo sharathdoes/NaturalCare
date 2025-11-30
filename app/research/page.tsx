@@ -95,7 +95,7 @@ export default function ResearchPage() {
               </p>
               <div className="flex flex-wrap gap-2 mt-4">
                 {paper.tags.map((tag) => (
-                  <Badge key={tag} variant="secondary" className="bg-green-50 text-green-700 hover:bg-green-100">
+                  <Badge key={tag} variant="default" className="bg-green-50 text-green-700 hover:bg-green-100">
                     {tag}
                   </Badge>
                 ))}
